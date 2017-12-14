@@ -1,0 +1,386 @@
+<html>
+<head>
+    <link rel="stylesheet" href="font-awesome-4.7.0\css\font-awesome.min.css">
+    
+    <style>
+      body{
+  background:black;
+}
+.container{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:black;
+  flex-direction:column;
+}
+.top,.bottom{
+  display:flex;
+  margin:-5px;
+}
+.top{
+  margin-top:-10px;
+}
+.board{
+  width:500px;
+  height:500px;
+  border-radius:60%;
+  border:15px solid #bbb;
+  overflow:hidden;
+  transform:rotate(45deg);
+}
+.box{
+  border:5px solid #aaa;
+  border-bottom:10px solid #aaa;
+  width:250px;
+  height:250px;
+  opacity:0.8;
+  cursor:pointer;
+  position: relative;
+}
+.green{
+  background:darkgreen;
+}
+.red{
+  background:darkred;
+}
+.yellow{
+  background:#FBC02D;
+}
+.blue{
+  background:darkblue;
+}
+.light.green{
+  background:limegreen;
+  opacity:1;
+}
+.light.red{  
+  background:orangered;
+  opacity:1;
+}
+.light.yellow{  
+  background:yellow;
+  opacity:1;
+}
+.light.blue{  
+  background:rgb(26, 160, 212);
+  opacity:1;
+}
+.controller{
+  margin-top:-410px;
+  margin-left:100px;
+  width:300px;
+  height:300px;
+  background:rgb(243, 200, 200);
+  position:absolute;
+  z-index:4;
+  border:3px solid black;
+  border-radius:60%;
+  box-shadow:0px 0px 26px -2px black;
+  transform:rotate(-45deg);
+}
+h2{
+  text-align:center;
+  margin-top:30px;
+  margin-bottom:15px;
+  font-weight:bolder;
+}
+.panel{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  font-size: 14px;
+}
+.restart{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.pdiv{
+  text-align:center;
+  padding: 10px;
+}
+.counting{
+  height:30px;
+  width:50px;
+  background:maroon;
+  color:orangered;
+  font-size: 25px;
+  font-weight: bold;
+  border:1px solid red;
+  border-radius:5px;
+  margin-bottom:-6px;
+}
+.btn{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  box-shadow:2px 2px 3px black;
+  cursor:pointer;
+  margin-bottom:4px;
+}
+.start{
+  background:red;
+  color:white;
+  border:1px solid blue;
+}
+.mode{
+  background:yellow;
+  color:black;
+  border:1px solid maroon;
+}
+.re{
+  background: darkblue;
+  color: white;
+  border: 1px solid green;
+}
+.mode.on{
+  background:limegreen;
+  color:white;
+  font-weight:bold;
+}
+.alertbox{
+  background: rgba(20,20,90,0.9);
+  color: white;
+  width: 100%;
+  height: 100%;
+  top:0px;
+  left: 0px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  visibility: hidden;
+  font-size:35px;
+  text-align:center;
+}
+.message{
+  margin-bottom:20px;
+}
+.continue{
+  border: 1px solid #abc;
+  border-radius: 15px;
+  width: 120px;
+  color: white;
+  height: 40px;
+  font-size: 18px;
+  background: rgb(218, 48, 36);
+}
+.continue:hover{
+  border: 1px solid red;
+  background: #aabbcc;
+  color: indigo;
+}
+@keyframes showing{
+  0%{
+    visibility: visible;
+    transform: scale(0.2);
+  }
+  100%{
+    visibility: visible;
+    transform: scale(1);
+  }
+}
+.alertbox.show{
+  animation: showing .7s ease;
+  animation-fill-mode: forwards;
+}
+@media (max-width: 550px){
+  .board{
+    transform: scale(0.75) rotate(45deg);
+  }
+}
+@media (max-width: 420px){
+  .board{
+    transform: scale(0.55) rotate(45deg);
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alertbox">
+            <div class="message"></div>
+            <div><button class="continue">Play Again</button></div>
+          </div>
+        <div class="board">
+          <div class="top">
+            <div class="red box" id="red"></div>
+            <div class="yellow box" id="yellow"></div>
+          </div>
+          <div class="bottom">
+            <div class="green box" id="green"></div>
+            <div class="blue box" id="blue"></div>
+          </div>
+          <div class="controller">
+            <h2>Simon</h2>
+            <div class="panel">
+              <div class="pdiv"><div class="counting"></div><br/><b>COUNT</b></div>
+              <div class="pdiv"><button class="btn start"><i class="fa fa-play-circle"></i></button><br/><b class="play">START</b></div>
+              <div class="pdiv"><button class="btn mode">Off</button><br/><b>STRICT</b></div>
+            </div>
+            <div class="restart"><div><button class="btn re"><i class="fa fa-refresh"></i></button></div><div><b>RESTART</b></div></div>
+          </div>
+        </div>
+        <audio id="red-aud">
+          <source src="audio/simonSound1.mp3" type="audio/mpeg"/>
+      Your browser does not support the audio element.  
+        </audio>
+        <audio id="blue-aud">
+          <source src="audio/simonSound2.mp3" type="audio/mpeg"/>
+      Your browser does not support the audio element.  
+        </audio>
+        <audio id="yellow-aud">
+          <source src="audio/simonSound3.mp3" type="audio/mpeg"/>
+      Your browser does not support the audio element.  
+        </audio>
+        <audio id="green-aud">
+          <source src="audio/simonSound4.mp3" type="audio/mpeg"/>
+      Your browser does not support the audio element.  
+        </audio>
+      </div>
+<script src="jquery-2.1.4.min.js"></script>
+<script>
+  $(document).ready(function(){
+  var strictmode="Off";
+  var userinput=[];
+  var running=false;
+  var showing=false;
+  var seq=[];
+  var colors=["red","green","blue","yellow"];
+  var t1,t2,t3;
+  var count=1;
+  $(".continue").click(function(){
+    $(".alertbox").removeClass("show");
+    if(strictmode=="On"||count==21){
+      restart();
+    }
+    else{
+    setTimeout(function(){          
+      showcolors(0);
+      },500);
+    }
+  });
+  function showalert(message,btntxt){
+    $(".message").html(message);
+    $(".continue").text(btntxt);
+    $(".alertbox").addClass("show");
+  }
+  $(".box").click(function(){
+    if(running===true&&showing===false){
+    if(seq[userinput.length]==$(this).attr("id")){
+    userinput.push($(this).attr("id"));
+    enlight($(this));
+    if(userinput.length==seq.length){
+      clearTimeout(t1);
+      t2=setTimeout(function(){
+      if(count==21){
+      stop();
+      showalert("Congrats You win!!","Play Again");
+      }
+      else{
+      $(".counting").text(count++);        
+      addcolors();
+      }
+      },600);
+    }
+    }
+    else{
+      if(strictmode=="Off"||count==21){
+        userinput=[];
+        clearTimeout(t1);
+        showalert("Wrong input!!<br/>Retry..","Continue");
+      }
+      else{
+      showalert("Game Over!!<br/>Wrong input!!<br/>You Lose!!","Play Again");
+      }
+    }
+    }
+  });
+  function enlight(elem){  
+    elem.addClass("light");
+    var id="#"+elem.attr("id")+"-aud";
+    $(id)[0].play();
+    var t=setTimeout(function(){ 
+      elem.removeClass("light"); 
+    }, 600);
+  }
+  $(".mode").click(function(){
+    strictmode=(strictmode=="Off")?"On":"Off";
+    $(this).toggleClass("on");
+    $(this).text(strictmode);
+  });
+  $(".start").click(function(){
+    running=running?false:true;
+    if(running){
+      play();
+    }
+    else{
+      stop();
+    }
+  });
+  $(".re").click(function(){
+    restart();
+  });
+  function stop(){
+    clearTimeout(t1);
+    clearTimeout(t2); 
+    clearTimeout(t3);   
+    $(".start i").addClass("fa-play-circle");
+    $(".start i").removeClass("fa-stop-circle");
+    $(".start").css("background","red");
+    $(".play").text("START");
+    userinput=[];  
+    $(".counting").text("");
+    running=false;
+    showing=false;
+  }
+  function play(){
+    count=1; 
+    $(".start i").addClass("fa-stop-circle");
+    $(".start i").removeClass("fa-play-circle");
+    $(".start").css("background","limegreen");
+    $(".play").text("STOP");
+    seq=[];
+    $(".counting").text(count++);        
+    addcolors();
+  }
+  function restart(){
+    stop();
+    running=true;
+    play();
+  }
+  function addcolors(){
+      seq.push(colors[Math.floor(Math.random()*4)]);
+      showcolors(0);
+      userinput=[];
+    t1=setTimeout(function(){
+      if(seq.length!=userinput.length){
+        if(strictmode=="Off"){
+          userinput=[];
+          showalert("Time out!!<br/>Retry...","Continue");
+        }
+        else{
+        showalert("Game Over!!<br/>Time out!!<br/>You lose!!","Play Again");
+        }
+      } 
+      },30000+count*800);
+  }
+  function showcolors(i){
+    showing=true;
+      if(i==seq.length){
+        showing=false;
+        return false;
+      }
+      t3=setTimeout(function(){
+        enlight($("."+seq[i]));
+        showcolors(i+1);
+      },800);
+    }
+});
+</script>
+</body>
+</html>
